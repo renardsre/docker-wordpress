@@ -18,3 +18,7 @@ I use docker compose to setup wordpress as a container app. The docker compose f
 5. The network subnet is 172.144.144.0/16. And for each container is already defined the IPv4 network.
 6. You can stop using command `docker-compose stop` or destroy it using `docker-compose down`.
 
+## How to scale the platform if the user/viewer of the content growing?
+1. You can use docker swarm to make replicate of wordpress container.
+2. Or you can append more wordpress container with same volume location. And use Nginx as loadbalancer to control the traffic.
+
