@@ -1,0 +1,68 @@
+version: '3'
+
+services:
+  
+  db:
+    container_name: mysql
+    image: mysql:5.7
+    volumes:
+      - ./db-data:/var/lib/mysql
+    restart: always
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_USER: admin
+      MYSQL_ROOT_PASSWORD: test12345
+      MYSQL_PASSWORD: test12345
+      MYSQL_DATABASE: wordpress
+    networks:
+      wpsite:
+        ipv4_address: 172.144.144.5
+
+  phpmyadmin:
+    container_name: phpmyadmin
+    depends_on:
+      - db
+    image: phpmyadmin:latest
+    restart: always
+    ports:
+      - 8002:80
+    environment:
+      MYSQL_ROOT_PASSWORD: root12345    
+      PMA_HOST: mysql
+      PMA_USER: root
+      PMA_PASSWORD: test12345
+    networks:
+      wpsite:
+        ipv4_address: 172.144.144.4
+
+  wordpress:
+    container_name: wordpress
+    depends_on:
+      - db
+    image: wordpress:latest
+    ports:
+      - 8000:80
+    restart: always
+    volumes: 
+      - ./wp-data:/var/www/html
+    environment:
+      WORDPRESS_DB_HOST: db
+      WORDPRESS_DB_USER: admin
+      WORDPRESS_DB_PASSWORD: test12345
+      WORDPRESS_DB_NAME: wordpress
+    networks:
+      wpsite:
+        ipv4_address: 172.144.144.3
+
+
+networks:
+  wpsite:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.144.144.0/16
+
+volumes:
+  db-data:
+  wp-data:
